@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.geometry.Rectangle2D;
 
 public class Controller implements Initializable {
 
@@ -36,12 +37,16 @@ public class Controller implements Initializable {
     private GraphicsContext gc;
     private ColorPalette colorPalette;
 
-    private final ObservableList<DrawingObject> objects =
-            FXCollections.observableArrayList();
+    private final ObservableList<DrawingObject> objects = FXCollections.observableArrayList();
 
     private int nextObjectId = 1;
 
     private DrawingObject currentObject;
+
+    private boolean movingObject = false;
+
+    private double lastMouseX;
+    private double lastMouseY;
 
     private double startX;
     private double startY;
@@ -117,9 +122,39 @@ public class Controller implements Initializable {
             return;
         }
 
+        DrawingObject selected = objectsListView.getSelectionModel().getSelectedItem();
+
+        if (selected != null) {
+
+            if (selected.getBounds().contains(event.getX(), event.getY())) {
+                movingObject = true;
+
+                lastMouseX = event.getX();
+                lastMouseY = event.getY();
+            }
+
+        return;
+        }
+
+            DrawingObject clickedObject = findObjectAt(event.getX(), event.getY());
+
+        if (clickedObject != null) {
+
+            objectsListView.getSelectionModel().select(clickedObject);
+
+            movingObject = true;
+            lastMouseX = event.getX();
+            lastMouseY = event.getY();
+
+            redraw();
+            return;
+        }
+
+
         startX = event.getX();
         startY = event.getY();
 
+        
         String tool = toolComboBox.getValue();
 
         if (tool == null) {
@@ -164,6 +199,27 @@ public class Controller implements Initializable {
 
     private void onMouseDragged(MouseEvent event) {
 
+        if (movingObject) {
+
+            DrawingObject selected = objectsListView.getSelectionModel().getSelectedItem();
+
+            if (selected != null) {
+
+                double dx = event.getX() - lastMouseX;
+                double dy = event.getY() - lastMouseY;
+
+                selected.move(dx, dy);
+
+                lastMouseX = event.getX();
+                lastMouseY = event.getY();
+
+                redraw();
+            }
+
+            return;
+        }
+
+
         if (currentObject == null) {
             return;
         }
@@ -173,6 +229,12 @@ public class Controller implements Initializable {
     }
 
     private void onMouseReleased(MouseEvent event) {
+
+        if (movingObject) {
+            movingObject = false;
+            redraw();
+            return;
+        }
 
         if (currentObject == null) {
             return;
@@ -236,5 +298,40 @@ public class Controller implements Initializable {
         if (currentObject != null) {
             currentObject.draw(gc);
         }
+
+        DrawingObject selected = objectsListView.getSelectionModel().getSelectedItem();
+
+        if (selected != null) {
+            Rectangle2D bounds = selected.getBounds();
+
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(1);
+            gc.setLineDashes(6, 4);
+
+            gc.strokeRect(
+                bounds.getMinX(),
+                bounds.getMinY(),
+                bounds.getWidth(),
+                bounds.getHeight()
+            );
+
+            // Restaurar el trazado continuo
+            gc.setLineDashes();
+        }
     }
+
+    private DrawingObject findObjectAt(double x, double y) {
+
+        // Revisar primero los objetos más recientes
+        for (int i = objects.size() - 1; i >= 0; i--) {
+
+            DrawingObject object = objects.get(i);
+
+            if (object.getBounds().contains(x, y)) {
+                return object;
+            }
+        }
+
+        return null;
+        }
 }
