@@ -1,5 +1,7 @@
 package com.project;
 
+import java.util.function.Consumer;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -14,18 +16,39 @@ public class ColorPalette {
 
     private final Canvas canvas;
     private final GraphicsContext gc;
+    private final Consumer<Color> onColorSelected;
+
     private Color selectedColor = COLORS[0];
 
     public ColorPalette(Canvas canvas) {
+        this(canvas, null);
+    }
+
+    public ColorPalette(Canvas canvas, Consumer<Color> onColorSelected) {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
+        this.onColorSelected = onColorSelected;
 
         canvas.setOnMouseClicked(this::onMouseClicked);
+
         draw();
     }
 
     public Color getSelectedColor() {
         return selectedColor;
+    }
+
+    public void setSelectedColor(Color color) {
+        selectedColor = null;
+
+        for (Color paletteColor : COLORS) {
+            if (paletteColor.equals(color)) {
+                selectedColor = paletteColor;
+                break;
+            }
+        }
+
+        draw();
     }
 
     private double getCenterX(int index) {
@@ -58,15 +81,33 @@ public class ColorPalette {
             double cx = getCenterX(i);
             double cy = getCenterY();
 
-            gc.setFill(COLORS[i]);
-            gc.fillOval(cx - RADIUS, cy - RADIUS, RADIUS * 2, RADIUS * 2);
+            double radius = RADIUS;
 
             // Mark the selected color with a ring around it
             if (COLORS[i].equals(selectedColor)) {
+                cy -= 5;
+            }
+
+            gc.setFill(COLORS[i]);
+            gc.fillOval(
+                cx - radius,
+                cy - radius,
+                radius * 2,
+                radius * 2
+            );
+
+            if (COLORS[i].equals(selectedColor)) {
                 double r = RADIUS + 5;
+
                 gc.setStroke(Color.BLACK);
                 gc.setLineWidth(2);
-                gc.strokeOval(cx - r, cy - r, r * 2, r * 2);
+
+                gc.strokeOval(
+                    cx - r,
+                    cy - r,
+                    r * 2,
+                    r * 2
+                );
             }
         }
     }

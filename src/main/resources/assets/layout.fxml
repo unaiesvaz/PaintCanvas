@@ -2,49 +2,47 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 
-<HBox xmlns="http://javafx.com/javafx/22"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.project.Controller">
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.Controller">
     <children>
 
         <!-- Left: drawing area -->
-        <Canvas fx:id="canvas" width="600.0" height="500.0" />
+        <Canvas fx:id="canvas" height="500.0" width="600.0" />
 
         <!-- Center: tools -->
-        <VBox spacing="8.0" prefWidth="140.0" style="-fx-background-color: #eeeeee;">
-            <padding><Insets top="10.0" right="10.0" bottom="10.0" left="10.0" /></padding>
-            <children>
-                <!-- Top: line width -->
-                <Label text="Width" style="-fx-font-weight: bold;" />
-                <fx:define>
-                    <ToggleGroup fx:id="widthGroup" />
-                </fx:define>
-                <RadioButton fx:id="thinRadio" text="Thin" toggleGroup="$widthGroup" selected="true" />
-                <RadioButton fx:id="thickRadio" text="Thick" toggleGroup="$widthGroup" />
-
-                <!-- Push the colors to the bottom -->
-                <Region VBox.vgrow="ALWAYS" />
-                <Separator />
-
-                <!-- Bottom: predefined colors -->
-                <Label text="Color" style="-fx-font-weight: bold;" />
-                <Canvas fx:id="colorsCanvas" width="120.0" height="60.0" />
-            </children>
+        <VBox prefWidth="140.0" spacing="8.0" style="-fx-background-color: #eeeeee;">
+            <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+         <children>
+            <Label text="Herramienta" />
+            <ComboBox fx:id="toolComboBox" prefWidth="120.0" />
+            <Label text="Color contorno" />
+            <ColorPicker fx:id="lineColorPicker" />
+            <Label text="Color relleno" />
+            <ColorPicker fx:id="fillColorPicker" />
+            <Label text="Grosor de linea" />
+            <Slider fx:id="lineWidthSlider" max="20.0" min="1.0" showTickLabels="true" showTickMarks="true" value="2.0" />
+            <Separator prefWidth="200.0" />
+            <Label text="Colores predefinidos" />
+            <Canvas fx:id="colorsCanvas" height="60.0" width="120.0" />
+         </children>
         </VBox>
 
         <!-- Right: objects list (to do) -->
         <VBox prefWidth="160.0">
-            <padding><Insets top="10.0" right="10.0" bottom="10.0" left="10.0" /></padding>
+            <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
             <children>
-                <Label text="Objects" style="-fx-font-weight: bold;" />
+                <Label style="-fx-font-weight: bold;" text="Objects" />
+                <ListView fx:id="objectsListView" VBox.vgrow="ALWAYS" />
+                <Button fx:id="deleteButton" text="Eliminar objeto" />  
             </children>
         </VBox>
 

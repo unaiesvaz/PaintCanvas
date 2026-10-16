@@ -1,4 +1,7 @@
 com\project\Controller.class
 com\project\ColorPalette.class
+com\project\RectangleObject.class
 com\project\Stroke.class
 com\project\Main.class
+com\project\LineObject.class
+com\project\DrawingObject.class
