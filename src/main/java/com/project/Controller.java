@@ -84,6 +84,8 @@ public class Controller implements Initializable {
                 colorPalette.setSelectedColor(newColor)
         );
 
+        colorPalette.setSelectedColor(lineColorPicker.getValue());
+
         // Lista de objetos
         objectsListView.setItems(objects);
 
@@ -96,11 +98,17 @@ public class Controller implements Initializable {
                 redraw();
             });
 
-        // Al elegir una herramienta, volvemos al modo de dibujo
-        toolComboBox.valueProperty().addListener(
-            (observable, oldTool, newTool) ->
-                objectsListView.getSelectionModel().clearSelection()
-        );
+       // Al abrir el selector, salimos del modo de movimiento
+        toolComboBox.setOnMousePressed(event -> {
+            movingObject = false;
+            objectsListView.getSelectionModel().clearSelection();
+        });
+
+        // También gestionar los cambios de herramienta con teclado
+        toolComboBox.setOnAction(event -> {
+            movingObject = false;
+            objectsListView.getSelectionModel().clearSelection();
+        });
 
         deleteButton.setOnAction(event -> deleteSelectedObject());
 
@@ -122,26 +130,15 @@ public class Controller implements Initializable {
             return;
         }
 
-        DrawingObject selected = objectsListView.getSelectionModel().getSelectedItem();
-
-        if (selected != null) {
-
-            if (selected.getBounds().contains(event.getX(), event.getY())) {
-                movingObject = true;
-
-                lastMouseX = event.getX();
-                lastMouseY = event.getY();
-            }
-
-        return;
-        }
-
-            DrawingObject clickedObject = findObjectAt(event.getX(), event.getY());
+        // Primero comprobamos si hemos pulsado sobre algún objeto
+        DrawingObject clickedObject = findObjectAt(event.getX(), event.getY());
 
         if (clickedObject != null) {
 
+            // La lista y el Canvas seleccionan el mismo objeto
             objectsListView.getSelectionModel().select(clickedObject);
 
+            // Empezamos a moverlo desde la posición del cursor
             movingObject = true;
             lastMouseX = event.getX();
             lastMouseY = event.getY();
@@ -150,11 +147,13 @@ public class Controller implements Initializable {
             return;
         }
 
+        objectsListView.getSelectionModel().clearSelection();
+        movingObject = false;
 
+        // Si no hay selección, empezamos a dibujar
         startX = event.getX();
         startY = event.getY();
 
-        
         String tool = toolComboBox.getValue();
 
         if (tool == null) {
