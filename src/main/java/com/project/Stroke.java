@@ -8,16 +8,16 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-// A freehand stroke: an ordered list of points with its own style
 public class Stroke extends DrawingObject {
 
+    //Lista de coordenadas del trazo libre
     private final List<Point2D> points = new ArrayList<>();
 
-    public Stroke(int id, javafx.scene.paint.Color lineColor, double lineWidth) {
-        super(id, lineColor, javafx.scene.paint.Color.TRANSPARENT, lineWidth);
+    public Stroke(int id, Color lineColor, double lineWidth) {
+        super(id, lineColor, Color.TRANSPARENT, lineWidth);
     }
 
-    public void addPoint(double x, double y) {
+    public void addPoint(double x, double y) { 
         points.add(new Point2D(x, y));
     }
 
@@ -34,7 +34,7 @@ public class Stroke extends DrawingObject {
         gc.setStroke(getLineColor());
         gc.setLineWidth(getLineWidth());
 
-        // Join each point with the next one
+        // Dibujar el trazo uniendo los puntos
         gc.beginPath();
         gc.moveTo(points.get(0).getX(), points.get(0).getY());
 

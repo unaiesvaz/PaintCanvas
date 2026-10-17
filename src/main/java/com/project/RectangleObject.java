@@ -22,9 +22,9 @@ public class RectangleObject extends DrawingObject { // La clase para dibujar re
         updateFromPoints(startX, startY, endX, endY);
     }
 
-    public void updateFromPoints(double startX, double startY,
-                                 double endX, double endY) {
+    public void updateFromPoints(double startX, double startY, double endX, double endY) {
 
+        //Calcular la posicion anchura y altura del rectangulo
         x = Math.min(startX, endX);
         y = Math.min(startY, endY);
 

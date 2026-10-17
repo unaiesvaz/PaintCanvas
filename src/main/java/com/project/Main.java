@@ -12,10 +12,12 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Load the only view of the example
+        // Cargar la interfaz gráfica definida en el archivo FXML
         Parent root = FXMLLoader.load(getClass().getResource("/assets/layout.fxml"));
+        // Crear la escena que contendrá todos los elementos de la interfaz
         Scene scene = new Scene(root);
 
+        // Configurar la ventana principal
         stage.setScene(scene);
         stage.setTitle("Exemple 0605 - Paint");
         stage.setResizable(false);

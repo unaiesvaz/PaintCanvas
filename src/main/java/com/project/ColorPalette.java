@@ -10,9 +10,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Stop;
 
-// Predefined colors drawn as circles on their own Canvas
 public class ColorPalette {
 
+    // Colores predefinidos para la paleta de lapices
     private static final Color[] COLORS = {
         Color.BLACK,
         Color.web("#9B1C1C"),
@@ -35,10 +35,6 @@ public class ColorPalette {
 
     private Color selectedColor = COLORS[0];
 
-    public ColorPalette(Canvas canvas) {
-        this(canvas, null);
-    }
-
     public ColorPalette(Canvas canvas, Consumer<Color> onColorSelected) {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
@@ -49,9 +45,6 @@ public class ColorPalette {
         draw();
     }
 
-    public Color getSelectedColor() {
-        return selectedColor;
-    }
 
     public void setSelectedColor(Color color) {
         selectedColor = null;

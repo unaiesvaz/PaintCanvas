@@ -37,12 +37,16 @@ public class Controller implements Initializable {
     private GraphicsContext gc;
     private ColorPalette colorPalette;
 
+    // Lista de objetos dibujados
     private final ObservableList<DrawingObject> objects = FXCollections.observableArrayList();
 
+    //Id de cada objeto
     private int nextObjectId = 1;
 
+    //Objeto que se esta creando, no esta guardado aun
     private DrawingObject currentObject;
 
+    //Indica si se esta moviendo un objeto
     private boolean movingObject = false;
 
     private double lastMouseX;
@@ -86,7 +90,6 @@ public class Controller implements Initializable {
 
         colorPalette.setSelectedColor(lineColorPicker.getValue());
 
-        // Lista de objetos
         objectsListView.setItems(objects);
 
         deleteButton.setDisable(true);
@@ -98,13 +101,8 @@ public class Controller implements Initializable {
                 redraw();
             });
 
-       // Al abrir el selector, salimos del modo de movimiento
-        toolComboBox.setOnMousePressed(event -> {
-            movingObject = false;
-            objectsListView.getSelectionModel().clearSelection();
-        });
 
-        // También gestionar los cambios de herramienta con teclado
+        // Gestiona la seleccion al cambiar la herramineta
         toolComboBox.setOnAction(event -> {
             movingObject = false;
             objectsListView.getSelectionModel().clearSelection();
@@ -112,7 +110,6 @@ public class Controller implements Initializable {
 
         deleteButton.setOnAction(event -> deleteSelectedObject());
 
-        // Eventos del lienzo
         canvas.setOnMousePressed(this::onMousePressed);
         canvas.setOnMouseDragged(this::onMouseDragged);
         canvas.setOnMouseReleased(this::onMouseReleased);
@@ -314,7 +311,6 @@ public class Controller implements Initializable {
                 bounds.getHeight()
             );
 
-            // Restaurar el trazado continuo
             gc.setLineDashes();
         }
     }
